@@ -266,7 +266,7 @@ def setup_requirements() -> Tuple[List[str], List[str], List[str]]:
 
     # Framework-specific requirements
     if "pytorch" in frameworks():
-        add_unique(install_reqs, ["torch", "flash-attn>=2.0.6,<=2.5.8,!=2.0.9,!=2.1.0"])
+        add_unique(install_reqs, ["torch", "flash-attn>=2.0.6,!=2.0.9,!=2.1.0"])
         add_unique(test_reqs, ["numpy", "onnxruntime", "torchvision"])
     if "jax" in frameworks():
         if not found_pybind11():
@@ -315,7 +315,7 @@ class CMakeExtension(setuptools.Extension):
             f"-DCMAKE_INSTALL_PREFIX={install_dir}",
         ]
         configure_command += self.cmake_flags
-        if found_ninja():
+        if found_ninja() and os.environ.get('TE_BUILD_WITH_NINJA', '1') == '1':
             configure_command.append("-GNinja")
         try:
             import pybind11
